@@ -1,4 +1,4 @@
-name: Deploy Workflow
+name: CI/CD Workflow
 
 on:
   push:
@@ -25,8 +25,6 @@ jobs:
 
             cd ~/automated/portfolio/app
             git pull origin main
-
-            # Docker-Build mit dem neuen Dockerfile
             docker build -t lenmp/portfolio:latest .
             cd ..
 
