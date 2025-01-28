@@ -1,9 +1,7 @@
 name: CI/CD Workflow
-
-on:
+'on':
   push:
     branches: main
-
 jobs:
   deploy:
     name: Deploy
@@ -11,15 +9,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+          ssh-private-key: '${{ secrets.SSH_PRIVATE_KEY }}'
       - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+        run: >
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{
+          secrets.SERVER_IP }} << 'EOF'
             # Stoppe alte Docker-Container
             docker compose -f ~/automated/portfolio/docker-compose.yml down || true
 
