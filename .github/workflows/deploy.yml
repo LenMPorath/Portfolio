@@ -21,12 +21,17 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Stoppe alte Docker-Container
             docker compose -f ~/automated/portfolio/docker-compose.yml down || true
 
+            # Wechsle ins App-Verzeichnis und aktualisiere den Code
             cd ~/automated/portfolio/app
             git pull origin main
-            docker build -t lenmp/portfolio:latest .
-            cd ..
 
+            # Erstelle das Docker-Image
+            docker build -t lenmp/portfolio:latest .
+
+            # Starte Docker-Container neu
+            cd ..
             docker compose -f ~/automated/portfolio/docker-compose.yml up -d --build
           EOF
