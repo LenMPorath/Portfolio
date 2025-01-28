@@ -21,22 +21,14 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            # Sicherstellen, dass alte Container gestoppt werden
             docker compose -f ~/automated/portfolio/docker-compose.yml down || true
 
-            # Arbeitsverzeichnis wechseln und neuen Code holen
             cd ~/automated/portfolio/app
             git pull origin main
 
             # Docker-Build mit dem neuen Dockerfile
-            docker build -t lenmp/portfolio:latest - <<DOCKERFILE
-            FROM arm64v8/nginx:latest
-            COPY . /usr/share/nginx/html
-            EXPOSE 80
-            CMD ["nginx", "-g", "daemon off;"]
-            DOCKERFILE
-
-            # Docker Compose ausführen
+            docker build -t lenmp/portfolio:latest .
             cd ..
+
             docker compose -f ~/automated/portfolio/docker-compose.yml up -d --build
           EOF
